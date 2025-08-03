@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PennyWise - Smart Savings for Smart Kids!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo svg {
+            width: 80px;
+            height: 80px;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .header p {
+            color: #f0f0f0;
+            font-size: 1.2em;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        .savings-screen {
+            text-align: center;
+        }
+        
+        .goal-info {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .goal-info h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            height: 40px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(45deg, #ffd89b, #19547b);
+            height: 100%;
+            transition: width 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .money-adding-zone {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+        
+        .money-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .money-btn {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+        
+        .money-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .money-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .piggy-bank {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff7675, #fd79a8);
+            border-radius: 50px;
+            margin: 30px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .piggy-bank::before {
+            content: '🐷';
+            font-size: 2em;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .custom-amount-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+        
+        .custom-input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid white;
+            border-radius: 10px;
+            margin-right: 10px;
+            width: 200px;
+        }
+        
+        .congratulations-screen {
+            text-align: center;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef, #fbc2eb);
+            padding: 50px;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .congratulations-screen h1 {
+            font-size: 3em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            animation: celebration-text 2s ease-in-out infinite;
+        }
+        
+        @keyframes celebration-text {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .fireworks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .firework {
+            position: absolute;
+            border-radius: 50%;
+            animation: firework-explode 2s ease-out infinite;
+        }
+        
+        @keyframes firework-explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+        
+        .floating-money {
+            position: fixed;
+            font-size: 2em;
+            pointer-events: none;
+            z-index: 1000;
+            animation: float-up 2s ease-out forwards;
+        }
+        
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotate(360deg);
+            }
+        }
+        
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .alert {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Piggy Bank Body -->
+                    <ellipse cx="50" cy="55" rx="35" ry="25" fill="#D2691E" stroke="#8B4513" stroke-width="3"/>
+                    
+                    <!-- Piggy Bank Head -->
+                    <circle cx="25" cy="40" r="15" fill="#D2691E" stroke="#8B4513" stroke-width="3"/>
+                    
+                    <!-- Snout -->
+                    <ellipse cx="15" cy="42" rx="8" ry="6" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    <circle cx="12" cy="40" r="2" fill="#8B4513"/>
+                    <circle cx="12" cy="44" r="2" fill="#8B4513"/>
+                    
+                    <!-- Eye -->
+                    <circle cx="28" cy="35" r="3" fill="#000"/>
+                    
+                    <!-- Ears -->
+                    <ellipse cx="22" cy="28" rx="4" ry="8" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    <ellipse cx="32" cy="28" rx="4" ry="8" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    
+                    <!-- Legs -->
+                    <rect x="20" y="75" width="8" height="12" rx="4" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    <rect x="35" y="75" width="8" height="12" rx="4" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    <rect x="50" y="75" width="8" height="12" rx="4" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    <rect x="65" y="75" width="8" height="12" rx="4" fill="#D2691E" stroke="#8B4513" stroke-width="2"/>
+                    
+                    <!-- Tail -->
+                    <path d="M 80 50 Q 90 45 85 55 Q 88 65 82 58" stroke="#8B4513" stroke-width="3" fill="none"/>
+                    
+                    <!-- Coin Slot -->
+                    <rect x="45" y="35" width="15" height="3" rx="1.5" fill="#8B4513"/>
+                    
+                    <!-- Dollar Coin -->
+                    <circle cx="60" cy="20" r="12" fill="#FFD700" stroke="#DAA520" stroke-width="2"/>
+                    <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#8B4513">$</text>
+                </svg>
+            </div>
+            <h1>🌟 PennyWise 🌟</h1>
+            <p>Smart Savings for Smart Kids!</p>
+        </div>
+        
+        <!-- SCREEN 1: Setup Form -->
+        <div class="screen active" id="setupScreen">
+            <div class="card">
+                <h2>🎯 Let's Set Up Your Savings Goal!</h2>
+                <div class="form-group">
+                    <label for="targetAmount">💰 How much money do you want to save?</label>
+                    <input type="number" id="targetAmount" placeholder="Enter amount (e.g., 100)" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeFrame">📅 In how many days do you want to save this?</label>
+                    <input type="number" id="timeFrame" placeholder="Enter days (e.g., 30)" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pocketMoney">🎁 How much pocket money do you get daily?</label>
+                    <input type="number" id="pocketMoney" placeholder="Enter daily pocket money" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dailySavings">💎 How much can you save each day?</label>
+                    <input type="number" id="dailySavings" placeholder="Enter daily savings amount" min="1">
+                </div>
+                
+                <div class="alert" id="alert"></div>
+                
+                <button class="btn" onclick="startSavingJourney()">🚀 Start My Savings Adventure!</button>
+            </div>
+        </div>
+        
+        <!-- SCREEN 2: Savings Interface -->
+        <div class="screen" id="savingsScreen">
+            <div class="card">
+                <div class="goal-info">
+                    <h2>🎯 Your Savings Mission</h2>
+                    <div class="stats-display">
+                        <div class="stat-item">
+                            <span class="stat-number" id="currentSavings">$0</span>
+                            <span>Saved So Far</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="targetDisplay">$0</span>
+                            <span>Your Goal</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="daysLeft">0</span>
+                            <span>Days Left</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="dailyNeeded">$0</span>
+                            <span>Daily Target</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card savings-screen">
+                <div class="money-adding-zone">
+                    <h3>💰 Add Money to Your Savings!</h3>
+                    <p>Click any amount to save it! Keep clicking to reach your goal faster! 🎯</p>
+                    
+                    <div class="money-buttons">
+                        <button class="money-btn" onclick="addMoneyToSavings(1)">$1 🪙</button>
+                        <button class="money-btn" onclick="addMoneyToSavings(5)">$5 💵</button>
+                        <button class="money-btn" onclick="addMoneyToSavings(10)">$10 💵</button>
+                        <button class="money-btn" onclick="addMoneyToSavings(20)">$20 💵</button>
+                        <button class="money-btn" onclick="addMoneyToSavings(50)">$50 💵</button>
+                    </div>
+                    
+                    <div class="custom-amount-section">
+                        <h4>💎 Or Add Custom Amount:</h4>
+                        <input type="number" id="customAmount" class="custom-input" placeholder="Enter amount" min="1">
+                        <button class="btn" onclick="addCustomAmount()">Add to Savings!</button>
+                    </div>
+                    
+                    <div class="piggy-bank" id="piggyBank">
+                        💰 $<span id="bankAmount">0</span>
+                    </div>
+                    
+                    <button class="btn" onclick="resetToSetup()" style="margin-top: 20px; background: linear-gradient(45deg, #636e72, #2d3436);">🔄 New Goal</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SCREEN 3: Congratulations -->
+        <div class="screen" id="congratulationsScreen">
+            <div class="congratulations-screen">
+                <div class="fireworks" id="fireworks"></div>
+                <h1>🎉 MISSION ACCOMPLISHED! 🎉</h1>
+                <h2>You're a Money-Saving Superhero! 🦸‍♂️</h2>
+                <p style="font-size: 1.5em; margin: 20px 0; color: white;">
+                    You saved <strong>$<span id="finalAmount">0</span></strong> and reached your goal!
+                </p>
+                <div style="font-size: 4em; margin: 30px 0;">🏆🎊🌟💰🎈</div>
+                <p style="font-size: 1.2em; color: white; margin: 20px 0;">
+                    Click anywhere to celebrate more! 🎉
+                </p>
+                <button class="btn" onclick="startNewGoal()" style="font-size: 1.3em; padding: 20px 40px;">
+                    🚀 Set New Savings Goal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        let savingsData = {
+            targetAmount: 0,
+            timeFrame: 0,
+            dailyPocketMoney: 0,
+            plannedDailySavings: 0,
+            currentSavings: 0,
+            startDate: null
+        };
+
+        // Screen navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Start the savings journey
+        function startSavingJourney() {
+            // Get input values
+            const target = parseFloat(document.getElementById('targetAmount').value);
+            const timeFrame = parseInt(document.getElementById('timeFrame').value);
+            const pocketMoney = parseFloat(document.getElementById('pocketMoney').value);
+            const dailySavings = parseFloat(document.getElementById('dailySavings').value);
+            
+            // Validation
+            if (!target || !timeFrame || !pocketMoney || !dailySavings) {
+                showAlert('Please fill in all fields! 😊');
+                return;
+            }
+            
+            if (dailySavings > pocketMoney) {
+                showAlert('You can\'t save more than your daily pocket money! 🤔');
+                return;
+            }
+            
+            if (target <= 0 || timeFrame <= 0) {
+                showAlert('Please enter positive numbers! 😊');
+                return;
+            }
+            
+            // Save data
+            savingsData = {
+                targetAmount: target,
+                timeFrame: timeFrame,
+                dailyPocketMoney: pocketMoney,
+                plannedDailySavings: dailySavings,
+                currentSavings: 0,
+                startDate: new Date()
+            };
+            
+            // Navigate to savings screen
+            showScreen('savingsScreen');
+            updateSavingsDisplay();
+            
+            // Play start sound
+            playStartSound();
+        }
+
+        // Add money to savings
+        function addMoneyToSavings(amount) {
+            savingsData.currentSavings += amount;
+            
+            // Visual feedback
+            createFloatingMoney(amount);
+            animatePiggyBank();
+            updateSavingsDisplay();
+            
+            // Play money sound
+            playMoneySound(amount);
+            
+            // Check if goal reached
+            if (savingsData.currentSavings >= savingsData.targetAmount) {
+                setTimeout(() => {
+                    showCongratulations();
+                }, 1000);
+            }
+        }
+
+        // Add custom amount
+        function addCustomAmount() {
+            const customAmount = parseFloat(document.getElementById('customAmount').value);
+            if (customAmount && customAmount > 0) {
+                addMoneyToSavings(customAmount);
+                document.getElementById('customAmount').value = '';
+            } else {
+                alert('Please enter a valid amount! 😊');
+            }
+        }
+
+        // Update the savings display
+        function updateSavingsDisplay() {
+            const progress = Math.min((savingsData.currentSavings / savingsData.targetAmount) * 100, 100);
+            const remaining = Math.max(0, savingsData.targetAmount - savingsData.currentSavings);
+            const dailyNeeded = savingsData.timeFrame > 0 ? Math.ceil(remaining / savingsData.timeFrame) : 0;
+            
+            // Update all display elements
+            document.getElementById('currentSavings').textContent = `$${savingsData.currentSavings}`;
+            document.getElementById('targetDisplay').textContent = `$${savingsData.targetAmount}`;
+            document.getElementById('daysLeft').textContent = savingsData.timeFrame;
+            document.getElementById('dailyNeeded').textContent = `$${dailyNeeded}`;
+            document.getElementById('bankAmount').textContent = savingsData.currentSavings;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+            
+            // Change progress bar color as it fills
+            if (progress < 30) {
+                progressBar.style.background = 'linear-gradient(45deg, #ff7675, #fd79a8)';
+            } else if (progress < 70) {
+                progressBar.style.background = 'linear-gradient(45deg, #fdcb6e, #e84393)';
+            } else {
+                progressBar.style.background = 'linear-gradient(45deg, #00b894, #00cec9)';
+            }
+        }
+
+        // Show congratulations screen
+        function showCongratulations() {
+            document.getElementById('finalAmount').textContent = savingsData.currentSavings;
+            showScreen('congratulationsScreen');
+            
+            // Start celebration effects
+            playVictorySound();
+            createFireworks();
+            
+            // Make screen clickable for more celebration
+            document.getElementById('congratulationsScreen').onclick = createClickCelebration;
+        }
+
+        // Visual effects
+        function createFloatingMoney(amount) {
+            const money = document.createElement('div');
+            money.className = 'floating-money';
+            money.textContent = `+$${amount} 💰`;
+            money.style.left = (Math.random() * window.innerWidth) + 'px';
+            money.style.top = (window.innerHeight / 2) + 'px';
+            
+            document.body.appendChild(money);
+            
+            setTimeout(() => {
+                money.remove();
+            }, 2000);
+        }
+
+        function animatePiggyBank() {
+            const piggyBank = document.getElementById('piggyBank');
+            piggyBank.classList.add('pulse');
+            piggyBank.style.background = 'linear-gradient(45deg, #00b894, #00cec9)';
+            
+            setTimeout(() => {
+                piggyBank.classList.remove('pulse');
+                piggyBank.style.background = 'linear-gradient(45deg, #ff7675, #fd79a8)';
+            }, 500);
+        }
+
+        function createFireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * 100 + '%';
+                    firework.style.top = Math.random() * 100 + '%';
+                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    firework.style.width = '20px';
+                    firework.style.height = '20px';
+                    
+                    fireworksContainer.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 2000);
+                }, i * 200);
+            }
+        }
+
+        function createClickCelebration(event) {
+            const celebration = document.createElement('div');
+            celebration.textContent = ['🎉', '🎊', '⭐', '💰', '🏆', '🌟'][Math.floor(Math.random() * 6)];
+            celebration.style.position = 'fixed';
+            celebration.style.left = event.clientX + 'px';
+            celebration.style.top = event.clientY + 'px';
+            celebration.style.fontSize = '2em';
+            celebration.style.pointerEvents = 'none';
+            celebration.style.zIndex = '1001';
+            celebration.style.animation = 'float-up 1s ease-out forwards';
+            
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                celebration.remove();
+            }, 1000);
+        }
+
+        // Sound effects using Web Audio API
+        function playMoneySound(amount) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Different frequencies for different amounts
+                const frequency = amount <= 5 ? 800 : amount <= 20 ? 1000 : amount <= 50 ? 1200 : 1400;
+                
+                // Create coin drop sound
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.4);
+                
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playVictorySound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play victory melody: C-E-G-C
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                
+                notes.forEach((frequency, index) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                        oscillator.type = 'square';
+                        
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.6);
+                    }, index * 300);
+                });
+                
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playStartSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Ascending notes for start
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.5);
+                oscillator.type = 'triangle';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+                
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Utility functions
+        function showAlert(message) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 4000);
+        }
+
+        function resetToSetup() {
+            showScreen('setupScreen');
+            // Clear form
+            document.getElementById('targetAmount').value = '';
+            document.getElementById('timeFrame').value = '';
+            document.getElementById('pocketMoney').value = '';
+            document.getElementById('dailySavings').value = '';
+        }
+
+        function startNewGoal() {
+            resetToSetup();
+            // Reset data
+            savingsData = {
+                targetAmount: 0,
+                timeFrame: 0,
+                dailyPocketMoney: 0,
+                plannedDailySavings: 0,
+                currentSavings: 0,
+                startDate: null
+            };
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some initial sparkle effect
+            setInterval(() => {
+                if (document.getElementById('setupScreen').classList.contains('active')) {
+                    createSparkle();
+                }
+            }, 2000);
+        });
+
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.textContent = '✨';
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+            sparkle.style.fontSize = '1.5em';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '999';
+            sparkle.style.animation = 'float-up 3s ease-out forwards';
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
